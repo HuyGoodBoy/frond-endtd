@@ -1,0 +1,52 @@
+@tailwind base;
+*::-webkit-scrollbar-track {
+    background: var(--primary);
+    border-radius: 5px;
+  }
+  
+  *::-webkit-scrollbar-thumb {
+    background-color: var(--secondary);
+    border-radius: 14px;
+    border: 3px solid var(--primary);
+  }
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #E50087;
+  --primary-focus: #d10079;
+  --primary-hover: #ff4593;
+  --primary-content: #ffffff;
+  
+  /* Cập nhật màu sắc daisyUI */
+  --p: 330 100% 45%;    /* màu chính - hồng đậm */
+  --pf: 330 100% 40%;   /* màu tập trung chính */
+  --s: 0 100% 45%;      /* màu phụ */
+  --sf: 0 100% 40%;     /* màu tập trung phụ */
+  --a: 330 100% 56%;    /* màu nhấn mạnh */
+  --af: 330 100% 50%;   /* màu tập trung nhấn mạnh */
+}
+
+/* Gradient background for pages */
+.bg-gradient-custom {
+  background: linear-gradient(135deg, #E50087, #ff6ba5);
+}
+
+/* Custom button styles */
+.btn-td {
+  background-color: #E50087;
+  color: white;
+  border: none;
+}
+
+.btn-td:hover {
+  background-color: #d10079;
+}
+
+.text-td {
+  color: #E50087;
+}
+
+.border-td {
+  border-color: #E50087;
+}
