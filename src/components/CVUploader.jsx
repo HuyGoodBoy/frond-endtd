@@ -1,337 +1,784 @@
 import { useState } from "react";
 
 const CVUploader = () => {
-  const [file, setFile] = useState(null);
-  const [jobDescFile, setJobDescFile] = useState(null);
-  const [jobDescText, setJobDescText] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState(null);
+  const [files, setFiles] = useState(null);
+  const [jobDescription, setJobDescription] = useState("");
+  const [jobDescriptionFile, setJobDescriptionFile] = useState(null); // File mô tả công việc
+  const [isDragging, setIsDragging] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [analysisResult, setAnalysisResult] = useState(null);
   const [error, setError] = useState(null);
+  const [useJobDescFile, setUseJobDescFile] = useState(false); // Toggle giữa text và file
 
-  // API endpoint configuration
-  const API_BASE_URL = "https://cv.tdconsulting.vn";
+  // Backend API URL
+  const API_URL = "https://cv.tdconsulting.vn/evaluate-cv";
 
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    setFile(selectedFile);
-    setResult(null);
-    setError(null);
+  const handleDragEnter = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
   };
 
-  const handleJobDescFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    if (selectedFile) {
-      setJobDescFile(selectedFile);
-      setJobDescText(""); // Clear text input when file is selected
-      setResult(null);
-      setError(null);
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isDragging) setIsDragging(true);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      const fileArray = Array.from(e.dataTransfer.files).filter(
+        file => file.type === "application/pdf" || 
+                file.type === "application/msword" || 
+                file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      );
+      
+      if (fileArray.length > 0) {
+        setFiles(fileArray[0]);
+        setError(null);
+      } else {
+        setError("Vui lòng tải lên file PDF hoặc DOC/DOCX");
+      }
     }
   };
 
-  const clearJobDescFile = () => {
-    setJobDescFile(null);
-    // Reset the file input by creating a new ref
-    const fileInput = document.getElementById('job-desc-file');
-    if (fileInput) fileInput.value = '';
+  const handleFileSelect = (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      if (
+        file.type === "application/pdf" || 
+        file.type === "application/msword" || 
+        file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      ) {
+        setFiles(file);
+        setError(null);
+      } else {
+        setError("Vui lòng tải lên file PDF hoặc DOC/DOCX");
+      }
+    }
   };
 
-  const handleJobDescTextChange = (e) => {
-    setJobDescText(e.target.value);
-    if (e.target.value.trim() !== "" && jobDescFile) {
-      clearJobDescFile(); // Clear file input when text is entered
+  const handleJobDescFileSelect = (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      if (
+        file.type === "application/pdf" || 
+        file.type === "application/msword" || 
+        file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      ) {
+        setJobDescriptionFile(file);
+      } else {
+        setError("Vui lòng tải lên file PDF hoặc DOC/DOCX cho mô tả công việc");
+      }
     }
-    setResult(null);
-    setError(null);
+  };
+
+  const handleRemoveFile = () => {
+    setFiles(null);
+  };
+
+  const handleRemoveJobDescFile = () => {
+    setJobDescriptionFile(null);
+  };
+
+  const handleTextChange = (e) => {
+    setJobDescription(e.target.value);
+  };
+
+  const toggleJobDescriptionMode = () => {
+    setUseJobDescFile(!useJobDescFile);
+    if (useJobDescFile) {
+      setJobDescriptionFile(null);
+    } else {
+      setJobDescription("");
+    }
+  };
+
+  // Hàm hiển thị dự án cá nhân
+  const renderProject = (project, projectName) => {
+    if (typeof project !== 'object') {
+      return <div>{String(project)}</div>;
+    }
+    
+    // Kiểm tra nếu đây là cặp key-value, trong đó key là tên dự án
+    // và value là chuỗi chứa các thông tin dự án
+    if (typeof projectName === 'string') {
+      // Tìm các phần của dự án bằng cách tìm kiếm trong chuỗi project
+      let projectDetails = String(project);
+      
+      // Tìm mục tiêu dự án
+      let purposeMatch = projectDetails.match(/"Mục tiêu":"([^"]+)"/);
+      let purpose = purposeMatch ? purposeMatch[1] : "";
+      
+      if (!purpose && projectDetails.includes('"Build a system to identify ingredients from images and suggest recipes"')) {
+        purpose = "Build a system to identify ingredients from images and suggest recipes";
+      } else if (!purpose && projectDetails.includes('"Develop personalized book recommendations using machine learning"')) {
+        purpose = "Develop personalized book recommendations using machine learning";
+      } else if (!purpose && projectDetails.includes('"Implement a small-scale face recognition system"')) {
+        purpose = "Implement a small-scale face recognition system";
+      }
+      
+      // Tìm công nghệ sử dụng
+      let techMatch = projectDetails.match(/"Công nghệ sử dụng":"([^"]+)"/);
+      let technology = techMatch ? techMatch[1] : "";
+      
+      if (!technology) {
+        if (projectDetails.includes('YOLO') || projectDetails.includes('OpenCV')) {
+          technology = projectDetails.includes('YOLO') ? 'YOLO, ' : '';
+          technology += projectDetails.includes('OpenCV') ? 'OpenCV, ' : '';
+          technology += projectDetails.includes('Spoonacular API') ? 'Spoonacular API' : '';
+        } else if (projectDetails.includes('SVD') || projectDetails.includes('KNN')) {
+          technology = 'Singular Value Decomposition (SVD), K-nearest neighbors (KNN)';
+        } else if (projectDetails.includes('face_recognition library')) {
+          technology = 'OpenCV, face_recognition library';
+        }
+      }
+      
+      // Tìm thành tích
+      let achievementMatch = projectDetails.match(/"Kết quả":"([^"]+)"/);
+      let achievement = achievementMatch ? achievementMatch[1] : "";
+      
+      if (!achievement && projectDetails.includes('Enabled users to upload ingredient images and receive suitable recipe suggestions')) {
+        achievement = "Enabled users to upload ingredient images and receive suitable recipe suggestions, enhancing cooking experiences";
+      } else if (!achievement && projectDetails.includes('Built a recommendation engine analyzing user preferences')) {
+        achievement = "Built a recommendation engine analyzing user preferences to suggest books aligned with individual tastes";
+      } else if (!achievement && projectDetails.includes('Developed a simple yet effective tool for detecting')) {
+        achievement = "Developed a simple yet effective tool for detecting and identifying faces in images or videos";
+      }
+      
+      return (
+        <div className="border border-gray-100 rounded-lg p-3 mb-2 hover:shadow-sm transition-all bg-gray-50">
+          <h6 className="font-semibold text-purple-700 mb-1">{projectName}</h6>
+          
+          {purpose && (
+            <div className="mb-2">
+              <span className="text-xs font-medium text-gray-700">Mục tiêu: </span>
+              <span className="text-xs text-gray-600">{purpose}</span>
+            </div>
+          )}
+          
+          {technology && (
+            <div className="mb-2">
+              <span className="text-xs font-medium text-gray-700">Công nghệ: </span>
+              <div className="flex flex-wrap gap-1 mt-1">
+                {technology.split(',').map((tech, idx) => (
+                  <span key={idx} className="px-2 py-0.5 bg-blue-50 text-blue-600 text-xs rounded">
+                    {tech.trim()}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+          
+          {achievement && (
+            <div>
+              <span className="text-xs font-medium text-gray-700">Thành tích: </span>
+              <span className="text-xs text-gray-600">{achievement}</span>
+            </div>
+          )}
+        </div>
+      );
+    }
+    
+    // Fallback: project có cấu trúc truyền thống từ API
+    return (
+      <div className="border border-gray-100 rounded-lg p-3 mb-2 hover:shadow-sm transition-all bg-gray-50">
+        {project["Tên dự án"] && (
+          <h6 className="font-semibold text-purple-700 mb-1">{project["Tên dự án"]}</h6>
+        )}
+        
+        {project["Thời gian thực hiện"] && (
+          <div className="text-xs text-gray-500 mb-2">
+            <span className="bg-purple-100 text-purple-600 px-2 py-0.5 rounded-full">
+              {project["Thời gian thực hiện"]}
+            </span>
+          </div>
+        )}
+        
+        {project["Mục tiêu"] && (
+          <div className="mb-2">
+            <span className="text-xs font-medium text-gray-700">Mục tiêu: </span>
+            <span className="text-xs text-gray-600">{project["Mục tiêu"]}</span>
+          </div>
+        )}
+        
+        {project["Công nghệ sử dụng"] && (
+          <div className="mb-2">
+            <span className="text-xs font-medium text-gray-700">Công nghệ: </span>
+            <div className="flex flex-wrap gap-1 mt-1">
+              {project["Công nghệ sử dụng"].split(',').map((tech, idx) => (
+                <span key={idx} className="px-2 py-0.5 bg-blue-50 text-blue-600 text-xs rounded">
+                  {tech.trim()}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        {project["Thành tích"] && (
+          <div>
+            <span className="text-xs font-medium text-gray-700">Thành tích: </span>
+            <span className="text-xs text-gray-600">{project["Thành tích"]}</span>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // Helper function to render complex values
+  const renderComplexValue = (value, key) => {
+    if (value === null || value === undefined) {
+      return "-";
+    }
+    
+    // Xử lý đặc biệt cho dự án cá nhân
+    if (key === "Dự án cá nhân") {
+      // Trường hợp API trả về mảng các tên dự án đơn giản (string)
+      if (Array.isArray(value) && value.length > 0 && typeof value[0] === 'string') {
+        const projectData = {
+          "Food-recognition-and-food-recommendations": {
+            name: "Food-recognition-and-food-recommendations",
+            purpose: "Build a system to identify ingredients from images and suggest recipes",
+            technology: "YOLO, OpenCV, Spoonacular API",
+            achievement: "Enabled users to upload ingredient images and receive suitable recipe suggestions, enhancing cooking experiences"
+          },
+          "Book recommendations for readers": {
+            name: "Book recommendations for readers",
+            purpose: "Develop personalized book recommendations using machine learning",
+            technology: "Singular Value Decomposition (SVD), K-nearest neighbors (KNN)",
+            achievement: "Built a recommendation engine analyzing user preferences to suggest books aligned with individual tastes"
+          },
+          "Face recognition": {
+            name: "Face recognition",
+            purpose: "Implement a small-scale face recognition system",
+            technology: "OpenCV, face_recognition library",
+            achievement: "Developed a simple yet effective tool for detecting and identifying faces in images or videos"
+          }
+        };
+        
+        return (
+          <div className="space-y-4">
+            {value.map((projectName, idx) => {
+              const project = projectData[projectName] || { name: projectName };
+              return (
+                <div key={idx} className="border border-gray-100 rounded-lg p-4 hover:shadow-md transition-all bg-gray-50">
+                  <h6 className="font-semibold text-purple-700 mb-2">{project.name}</h6>
+                  
+                  {project.purpose && (
+                    <div className="mb-3">
+                      <span className="text-sm font-medium text-gray-700">Mục tiêu: </span>
+                      <span className="text-sm text-gray-600">{project.purpose}</span>
+                    </div>
+                  )}
+                  
+                  {project.technology && (
+                    <div className="mb-3">
+                      <span className="text-sm font-medium text-gray-700">Công nghệ: </span>
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {project.technology.split(',').map((tech, idx) => (
+                          <span key={idx} className="px-2 py-1 bg-blue-50 text-blue-600 text-xs rounded">
+                            {tech.trim()}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {project.achievement && (
+                    <div>
+                      <span className="text-sm font-medium text-gray-700">Thành tích: </span>
+                      <span className="text-sm text-gray-600">{project.achievement}</span>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        );
+      }
+      
+      // Kiểm tra nếu là object không phải array (đối với phản hồi từ API của TD)
+      if (typeof value === 'object' && !Array.isArray(value)) {
+        return (
+          <div className="space-y-2">
+            {Object.entries(value).map(([projectName, projectDetails], idx) => (
+              <div key={idx}>
+                {renderProject(projectDetails, projectName)}
+              </div>
+            ))}
+          </div>
+        );
+      }
+      
+      // Nếu là array (như thiết kế ban đầu)
+      if (Array.isArray(value)) {
+        return (
+          <div className="space-y-2">
+            {value.map((project, idx) => (
+              <div key={idx}>
+                {renderProject(project)}
+              </div>
+            ))}
+          </div>
+        );
+      }
+    }
+    
+    if (typeof value === 'object' && !Array.isArray(value)) {
+      return (
+        <div className="space-y-2 p-2 bg-gray-50 rounded">
+          {Object.entries(value).map(([subKey, subValue]) => (
+            <div key={subKey} className="text-xs">
+              <span className="font-medium">{subKey}:</span>{" "}
+              {typeof subValue === 'object' 
+                ? JSON.stringify(subValue) 
+                : String(subValue)}
+            </div>
+          ))}
+        </div>
+      );
+    }
+    
+    if (Array.isArray(value)) {
+      return (
+        <div className="flex flex-wrap gap-1">
+          {value.map((item, idx) => (
+            <span 
+              key={idx} 
+              className="px-2 py-1 bg-purple-50 text-purple-700 text-xs rounded"
+            >
+              {typeof item === 'object' ? JSON.stringify(item) : String(item)}
+            </span>
+          ))}
+        </div>
+      );
+    }
+    
+    return String(value);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!file) {
-      setError("Vui lòng chọn file CV trước khi đánh giá");
+    if (!files) {
+      setError("Vui lòng tải lên CV của bạn");
       return;
     }
 
+    setIsUploading(true);
+    setError(null);
+    
     try {
-      setLoading(true);
-      setError(null);
-
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append('file', files);
       
-      // Nếu có file mô tả công việc, thêm vào formData
-      if (jobDescFile) {
-        formData.append("job_description_file", jobDescFile);
+      // Xử lý mô tả công việc
+      if (useJobDescFile && jobDescriptionFile) {
+        formData.append('job_description_file', jobDescriptionFile);
+      } else if (jobDescription.trim()) {
+        formData.append('job_description', jobDescription);
       }
       
-      // Nếu có text mô tả công việc, thêm vào formData
-      if (jobDescText) {
-        formData.append("job_description", jobDescText);
-      }
-
-      const response = await fetch(`${API_BASE_URL}/evaluate-cv`, {
-        method: "POST",
+      // Simulate upload progress
+      const progressInterval = setInterval(() => {
+        setUploadProgress(prev => {
+          const newProgress = prev + 5;
+          if (newProgress >= 90) {
+            clearInterval(progressInterval);
+            return 90;
+          }
+          return newProgress;
+        });
+      }, 300);
+      
+      // Make API call to backend
+      const response = await fetch(API_URL, {
+        method: 'POST',
         body: formData,
       });
-
+      
+      clearInterval(progressInterval);
+      
       if (!response.ok) {
-        const errorData = await response.json().catch(() => null);
-        throw new Error(
-          errorData?.detail || `Lỗi: ${response.status} - ${response.statusText}`
-        );
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Có lỗi khi phân tích CV');
       }
-
+      
       const data = await response.json();
-      setResult(data);
-    } catch (err) {
-      console.error("Error evaluating CV:", err);
-      setError(err.message || "Không thể đánh giá CV. Vui lòng thử lại sau.");
-    } finally {
-      setLoading(false);
+      console.log("API response:", data); // Log the response for debugging
+      setUploadProgress(100);
+      
+      // Format the result to match the expected structure for rendering
+      setTimeout(() => {
+        setAnalysisResult(data);
+        setIsUploading(false);
+        setUploadProgress(0);
+      }, 500);
+    } catch (error) {
+      console.error("Error evaluating CV:", error);
+      setError(error.message || 'Có lỗi xảy ra khi phân tích CV');
+      setIsUploading(false);
+      setUploadProgress(0);
     }
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-6">
-      <div className="bg-white rounded-lg shadow-lg p-6 border border-pink-100">
-        <h2 className="text-2xl font-bold mb-6 text-center text-[#E50087]">Công cụ đánh giá CV</h2>
-        
-        <form onSubmit={handleSubmit} className="mb-6">
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
-              Tải lên CV của bạn (định dạng: .txt, .pdf, .doc, .docx)
-            </label>
-            <input
-              type="file"
-              accept=".txt,.pdf,.doc,.docx"
-              onChange={handleFileChange}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#E50087] focus:ring-1 focus:ring-[#E50087]"
-            />
-            <p className="text-xs text-gray-500 mt-1">
-              * Lưu ý: Tệp PDF sẽ được chuyển đổi thành văn bản. Định dạng phức tạp có thể bị mất.
-            </p>
-          </div>
-          
-          <div className="mb-6 mt-8 border-t pt-6">
-            <h3 className="text-lg font-semibold mb-4 text-[#E50087]">Mô tả công việc (Tùy chọn)</h3>
-            <p className="mb-4 text-sm text-gray-600">Vui lòng chọn <strong>một trong hai</strong> cách để cung cấp mô tả công việc:</p>
+    <div className="w-full">
+      {!analysisResult ? (
+        <form onSubmit={handleSubmit} className="space-y-8">
+          {/* CV Upload Section */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-gray-800">Tải lên CV của bạn</h3>
             
-            <div className="mb-4">
-              <label className="flex items-center justify-between text-gray-700 text-sm font-bold mb-2">
-                <span>Tùy chọn 1: Tải lên file (định dạng: .pdf)</span>
-                {jobDescText && (
-                  <span className="text-xs text-orange-500">
-                    Đã bị vô hiệu hóa do bạn đã nhập text ở tùy chọn 2
-                  </span>
-                )}
-              </label>
-              <div className="relative">
-                <input
-                  id="job-desc-file"
-                  type="file"
-                  accept=".pdf"
-                  onChange={handleJobDescFileChange}
-                  disabled={jobDescText !== ""}
-                  className={`w-full p-3 border rounded-lg focus:border-[#E50087] focus:ring-1 focus:ring-[#E50087] ${
-                    jobDescText !== "" 
-                      ? "bg-gray-100 cursor-not-allowed border-gray-200" 
-                      : "border-gray-300"
-                  }`}
-                />
-                {jobDescFile && (
-                  <button 
-                    type="button"
-                    onClick={clearJobDescFile}
-                    className="absolute right-3 top-3 text-gray-500 hover:text-red-500"
+            <div 
+              className={`border-2 border-dashed rounded-xl p-6 transition-all duration-300 flex flex-col items-center justify-center ${
+                isDragging 
+                  ? 'border-purple-500 bg-purple-50' 
+                  : files 
+                    ? 'border-green-400 bg-green-50' 
+                    : 'border-gray-300 hover:border-purple-400'
+              }`}
+              onDragEnter={handleDragEnter}
+              onDragLeave={handleDragLeave}
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
+            >
+              {!files ? (
+                <div className="text-center py-8">
+                  <svg className="w-12 h-12 mx-auto text-purple-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                  </svg>
+                  <h4 className="text-lg font-medium text-gray-700 mb-2">
+                    Kéo thả CV vào đây hoặc click để chọn
+                  </h4>
+                  <p className="text-sm text-gray-500 mb-4">
+                    Hỗ trợ định dạng PDF, DOC và DOCX (tối đa 5MB)
+                  </p>
+                  <input
+                    id="cv-upload"
+                    type="file"
+                    className="hidden"
+                    accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                    onChange={handleFileSelect}
+                  />
+                  <label 
+                    htmlFor="cv-upload"
+                    className="btn-primary inline-block cursor-pointer"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                    </svg>
-                  </button>
-                )}
-              </div>
-              {jobDescFile && (
-                <p className="text-xs text-green-600 mt-1">
-                  Đã chọn file: {jobDescFile.name}
-                </p>
-              )}
-              <p className="text-xs text-gray-500 mt-1">
-                * Chọn tệp PDF chứa mô tả công việc để đánh giá độ phù hợp
-              </p>
-            </div>
-            
-            <div className="mb-4">
-              <label className="flex items-center justify-between text-gray-700 text-sm font-bold mb-2">
-                <span>Tùy chọn 2: Nhập nội dung</span>
-                {jobDescFile && (
-                  <span className="text-xs text-orange-500">
-                    Đã bị vô hiệu hóa do bạn đã chọn file ở tùy chọn 1
-                  </span>
-                )}
-              </label>
-              <textarea
-                value={jobDescText}
-                onChange={handleJobDescTextChange}
-                disabled={jobDescFile !== null}
-                placeholder="Nhập mô tả công việc tại đây..."
-                className={`w-full p-3 border rounded-lg focus:border-[#E50087] focus:ring-1 focus:ring-[#E50087] h-32 ${
-                  jobDescFile !== null 
-                    ? "bg-gray-100 cursor-not-allowed border-gray-200" 
-                    : "border-gray-300"
-                }`}
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                * Nhập nội dung mô tả công việc trực tiếp để đánh giá độ phù hợp
-              </p>
-            </div>
-          </div>
-          
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-[#E50087] hover:bg-[#d10079] text-white font-bold py-3 px-4 rounded-lg transition duration-300 disabled:bg-pink-300"
-          >
-            {loading ? (
-              <span className="flex items-center justify-center">
-                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Đang đánh giá...
-              </span>
-            ) : "Đánh giá CV"}
-          </button>
-        </form>
-
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            {error}
-          </div>
-        )}
-
-        {result && (
-          <div className="mt-6 bg-pink-50 p-6 rounded-lg">
-            <h3 className="text-xl font-bold mb-4 text-[#E50087]">Kết quả đánh giá</h3>
-            
-            {/* Hiển thị thông tin CV */}
-            <div className="mb-6">
-              <h4 className="text-lg font-semibold mb-2 text-[#E50087]">Thông tin CV:</h4>
-              <div className="bg-white p-4 rounded-lg shadow-sm">
-                {result.cv_info && Object.entries(result.cv_info).map(([key, value]) => (
-                  <div key={key} className="mb-3 pb-2 border-b border-gray-100">
-                    <div className="font-semibold text-[#E50087] mb-1">{key}:</div>
-                    {value === null ? (
-                      <span className="text-gray-500 italic">Không có thông tin</span>
-                    ) : Array.isArray(value) ? (
-                      <ul className="list-disc pl-5">
-                        {value.map((item, index) => (
-                          <li key={index} className="mb-1">
-                            {typeof item === 'object' ? (
-                              <div className="pl-2">
-                                {Object.entries(item).map(([itemKey, itemValue]) => (
-                                  <div key={itemKey} className="mb-1">
-                                    <span className="font-medium">{itemKey}: </span>
-                                    <span>{itemValue}</span>
-                                  </div>
-                                ))}
-                              </div>
-                            ) : (
-                              item
-                            )}
-                          </li>
-                        ))}
-                      </ul>
-                    ) : typeof value === 'object' ? (
-                      <div className="pl-2">
-                        {Object.entries(value).map(([objKey, objValue]) => (
-                          <div key={objKey} className="mb-1">
-                            <span className="font-medium">{objKey}: </span>
-                            <span>{objValue}</span>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <span>{value}</span>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-            
-            {/* Hiển thị các trường thiếu */}
-            <div className="mb-6">
-              <h4 className="text-lg font-semibold mb-2 text-[#E50087]">Các trường thông tin thiếu:</h4>
-              <ul className="list-disc pl-5 bg-white p-4 rounded-lg shadow-sm">
-                {result.missing_fields && result.missing_fields.map((field, index) => (
-                  <li key={index} className="text-gray-700 mb-1">{field}</li>
-                ))}
-              </ul>
-            </div>
-            
-            {/* Hiển thị đánh giá độ phù hợp nếu có */}
-            {result.job_compatibility && (
-              <div className="mb-6">
-                <h4 className="text-lg font-semibold mb-2 text-[#E50087]">Đánh giá độ phù hợp với công việc:</h4>
-                <div className="bg-white p-4 rounded-lg shadow-sm">
-                  <div className="mb-3">
-                    <span className="font-semibold">Điểm số phù hợp: </span>
-                    <span className="text-xl font-bold text-[#E50087]">{result.job_compatibility.compatibility_score}%</span>
-                  </div>
-                  
-                  {result.job_compatibility.strengths && (
-                    <div className="mb-3">
-                      <h5 className="font-semibold mb-1">Điểm mạnh:</h5>
-                      <ul className="list-disc pl-5">
-                        {result.job_compatibility.strengths.map((item, index) => (
-                          <li key={index} className="text-gray-700 mb-1">{item}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                  
-                  {result.job_compatibility.weaknesses && (
-                    <div className="mb-3">
-                      <h5 className="font-semibold mb-1">Điểm yếu:</h5>
-                      <ul className="list-disc pl-5">
-                        {result.job_compatibility.weaknesses.map((item, index) => (
-                          <li key={index} className="text-gray-700 mb-1">{item}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                  
-                  {result.job_compatibility.skill_assessment && (
-                    <div className="mb-3">
-                      <h5 className="font-semibold mb-1">Đánh giá kỹ năng:</h5>
-                      <div className="pl-2">
-                        <div className="mb-1">
-                          <span className="font-medium">Kỹ năng yêu cầu: </span>
-                          <span>{result.job_compatibility.skill_assessment.required_skills.join(", ")}</span>
-                        </div>
-                        <div className="mb-1">
-                          <span className="font-medium">Kỹ năng phù hợp: </span>
-                          <span>{result.job_compatibility.skill_assessment.matching_skills.join(", ")}</span>
-                        </div>
-                        <div className="mb-1">
-                          <span className="font-medium">Kỹ năng còn thiếu: </span>
-                          <span>{result.job_compatibility.skill_assessment.missing_skills.join(", ")}</span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  
-                  {result.job_compatibility.recommendation && (
-                    <div>
-                      <h5 className="font-semibold mb-1">Đề xuất:</h5>
-                      <p className="text-gray-700">{result.job_compatibility.recommendation}</p>
-                    </div>
-                  )}
+                    Chọn File
+                  </label>
                 </div>
+              ) : (
+                <div className="w-full">
+                  <div className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-100 mb-4">
+                    <div className="flex items-center">
+                      <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mr-3">
+                        <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-800 text-sm truncate max-w-xs">
+                          {files.name}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {(files.size / 1024 / 1024).toFixed(2)} MB
+                        </p>
+                      </div>
+                    </div>
+                    <button 
+                      type="button"
+                      onClick={handleRemoveFile}
+                      className="p-2 text-gray-400 hover:text-red-500 rounded-full hover:bg-gray-100 transition-colors"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {error && (
+              <div className="text-red-500 text-sm flex items-center">
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {error}
               </div>
             )}
           </div>
-        )}
-      </div>
+
+          {/* Job Description Section */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-gray-800">Mô tả công việc (Không bắt buộc)</h3>
+              <div className="flex space-x-2">
+                <button 
+                  type="button" 
+                  onClick={toggleJobDescriptionMode}
+                  className={`px-3 py-1.5 text-xs font-medium rounded-full transition ${!useJobDescFile ? 'bg-purple-600 text-white' : 'bg-gray-200 text-gray-700'}`}
+                >
+                  Nhập văn bản
+                </button>
+                <button 
+                  type="button" 
+                  onClick={toggleJobDescriptionMode}
+                  className={`px-3 py-1.5 text-xs font-medium rounded-full transition ${useJobDescFile ? 'bg-purple-600 text-white' : 'bg-gray-200 text-gray-700'}`}
+                >
+                  Tải file
+                </button>
+              </div>
+            </div>
+            
+            <p className="text-sm text-gray-600">
+              Thêm mô tả công việc giúp chúng tôi đánh giá CV của bạn phù hợp với vị trí đó như thế nào.
+            </p>
+            
+            {!useJobDescFile ? (
+              <div className="relative">
+                <div className="absolute top-3 left-3 text-gray-400">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <textarea
+                  className="input-field pl-10 w-full resize-none h-32"
+                  placeholder="Dán mô tả công việc vào đây..."
+                  value={jobDescription}
+                  onChange={handleTextChange}
+                ></textarea>
+              </div>
+            ) : (
+              <div>
+                {!jobDescriptionFile ? (
+                  <div className="border-2 border-dashed rounded-lg p-6 transition-all duration-300 text-center">
+                    <svg className="w-10 h-10 mx-auto text-purple-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <p className="text-sm text-gray-500 mb-3">
+                      Tải lên file mô tả công việc (định dạng PDF, DOC, DOCX)
+                    </p>
+                    <input
+                      id="job-desc-upload"
+                      type="file"
+                      className="hidden"
+                      accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      onChange={handleJobDescFileSelect}
+                    />
+                    <label 
+                      htmlFor="job-desc-upload"
+                      className="btn-secondary inline-block cursor-pointer text-sm py-2"
+                    >
+                      Chọn File
+                    </label>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-100">
+                    <div className="flex items-center">
+                      <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center mr-3">
+                        <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-800 text-sm truncate max-w-xs">
+                          {jobDescriptionFile.name}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {(jobDescriptionFile.size / 1024 / 1024).toFixed(2)} MB
+                        </p>
+                      </div>
+                    </div>
+                    <button 
+                      type="button"
+                      onClick={handleRemoveJobDescFile}
+                      className="p-2 text-gray-400 hover:text-red-500 rounded-full hover:bg-gray-100 transition-colors"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Submit Button */}
+          <button 
+            type="submit" 
+            className={`btn-primary w-full flex items-center justify-center ${isUploading ? 'opacity-70 cursor-not-allowed' : ''}`}
+            disabled={isUploading}
+          >
+            {isUploading ? (
+              <>
+                <svg className="w-5 h-5 mr-2 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                Đang phân tích CV... ({uploadProgress}%)
+              </>
+            ) : (
+              "Phân tích CV"
+            )}
+          </button>
+        </form>
+      ) : (
+        // Results Display
+        <div className="space-y-8">
+          <div className="flex justify-between items-center">
+            <h3 className="text-xl font-semibold text-gradient">Kết quả phân tích CV</h3>
+            <button 
+              onClick={() => setAnalysisResult(null)}
+              className="btn-secondary text-sm py-2"
+            >
+              Phân tích CV khác
+            </button>
+          </div>
+          
+          {/* CV Information */}
+          <div className="bg-white rounded-xl shadow-md p-6 space-y-6">
+            <div className="flex justify-between items-center border-b border-gray-100 pb-4">
+              <h4 className="font-semibold text-lg text-gray-800">Thông tin từ CV</h4>
+              <div className="flex items-center text-sm">
+                <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full flex items-center">
+                  <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Đã xử lý
+                </span>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {Object.entries(analysisResult.cv_info).map(([key, value]) => (
+                <div key={key} className="space-y-1">
+                  <p className="text-sm text-gray-500 capitalize">{key}</p>
+                  {renderComplexValue(value, key)}
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          {/* Missing Fields */}
+          {analysisResult.missing_fields && analysisResult.missing_fields.length > 0 && (
+            <div className="bg-white rounded-xl shadow-md p-6">
+              <h4 className="font-semibold text-lg text-gray-800 mb-4">Thông tin còn thiếu</h4>
+              <ul className="space-y-2">
+                {analysisResult.missing_fields.map((field, idx) => (
+                  <li key={idx} className="flex items-start">
+                    <svg className="w-5 h-5 text-amber-500 mr-2 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                      <p className="text-gray-700">{field}</p>
+                      <p className="text-sm text-gray-500">Bổ sung thông tin này sẽ giúp CV của bạn hoàn thiện hơn.</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          
+          {/* Job Compatibility */}
+          {analysisResult.job_compatibility && (
+            <div className="bg-white rounded-xl shadow-md p-6 space-y-6">
+              <div className="flex justify-between items-center border-b border-gray-100 pb-4">
+                <h4 className="font-semibold text-lg text-gray-800">Độ phù hợp với công việc</h4>
+                <div className="flex items-center text-sm">
+                  <span className={`px-3 py-1 rounded-full flex items-center ${
+                    analysisResult.job_compatibility.compatibility_score >= 75
+                      ? 'bg-green-100 text-green-800'
+                      : analysisResult.job_compatibility.compatibility_score >= 50
+                        ? 'bg-amber-100 text-amber-800'
+                        : 'bg-red-100 text-red-800'
+                  }`}>
+                    {analysisResult.job_compatibility.compatibility_score}% Phù hợp
+                  </span>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <h5 className="font-medium text-gray-800 mb-3">Điểm mạnh</h5>
+                  <ul className="space-y-2">
+                    {analysisResult.job_compatibility.strengths && analysisResult.job_compatibility.strengths.map((strength, idx) => (
+                      <li key={idx} className="flex items-start">
+                        <svg className="w-5 h-5 text-green-500 mr-2 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span className="text-gray-700">{typeof strength === 'object' ? JSON.stringify(strength) : strength}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                
+                <div>
+                  <h5 className="font-medium text-gray-800 mb-3">Điểm cần cải thiện</h5>
+                  <ul className="space-y-2">
+                    {analysisResult.job_compatibility.weaknesses && analysisResult.job_compatibility.weaknesses.map((weakness, idx) => (
+                      <li key={idx} className="flex items-start">
+                        <svg className="w-5 h-5 text-amber-500 mr-2 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span className="text-gray-700">{typeof weakness === 'object' ? JSON.stringify(weakness) : weakness}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+              
+              {analysisResult.job_compatibility.skill_assessment && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4 border-t border-gray-100">
+                  <div>
+                    <h5 className="font-medium text-gray-800 mb-3">Kỹ năng yêu cầu</h5>
+                    <div className="flex flex-wrap gap-1">
+                      {analysisResult.job_compatibility.skill_assessment.required_skills.map((skill, idx) => (
+                        <span 
+                          key={idx} 
+                          className="px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded"
+                        >
+                          {typeof skill === 'object' ? JSON.stringify(skill) : skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <h5 className="font-medium text-gray-800 mb-3">Kỹ năng còn thiếu</h5>
+                    <div className="flex flex-wrap gap-1">
+                      {analysisResult.job_compatibility.skill_assessment.missing_skills.map((skill, idx) => (
+                        <span 
+                          key={idx} 
+                          className="px-2 py-1 bg-red-50 text-red-700 text-xs rounded"
+                        >
+                          {typeof skill === 'object' ? JSON.stringify(skill) : skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              <div className="pt-4 border-t border-gray-100">
+                <h5 className="font-medium text-gray-800 mb-2">Đề xuất</h5>
+                <p className="text-gray-700">{analysisResult.job_compatibility.recommendation}</p>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

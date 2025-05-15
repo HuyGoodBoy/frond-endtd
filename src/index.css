@@ -1,52 +1,177 @@
 @tailwind base;
-*::-webkit-scrollbar-track {
-    background: var(--primary);
-    border-radius: 5px;
-  }
-  
-  *::-webkit-scrollbar-thumb {
-    background-color: var(--secondary);
-    border-radius: 14px;
-    border: 3px solid var(--primary);
-  }
 @tailwind components;
 @tailwind utilities;
 
+/* Modern scrollbar styling */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: rgba(243, 244, 246, 0.8);
+  border-radius: 8px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #7c3aed, #4f46e5);
+  border-radius: 8px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #6d28d9, #4338ca);
+}
+
 :root {
-  --primary: #E50087;
-  --primary-focus: #d10079;
-  --primary-hover: #ff4593;
-  --primary-content: #ffffff;
+  /* Primary colors */
+  --primary: #6d28d9;     /* Purple 800 */
+  --primary-light: #8b5cf6; /* Purple 500 */
+  --primary-dark: #5b21b6;  /* Purple 900 */
   
-  /* Cập nhật màu sắc daisyUI */
-  --p: 330 100% 45%;    /* màu chính - hồng đậm */
-  --pf: 330 100% 40%;   /* màu tập trung chính */
-  --s: 0 100% 45%;      /* màu phụ */
-  --sf: 0 100% 40%;     /* màu tập trung phụ */
-  --a: 330 100% 56%;    /* màu nhấn mạnh */
-  --af: 330 100% 50%;   /* màu tập trung nhấn mạnh */
+  /* Secondary colors */
+  --secondary: #4f46e5;      /* Indigo 600 */
+  --secondary-light: #818cf8; /* Indigo 400 */
+  --secondary-dark: #3730a3;  /* Indigo 800 */
+  
+  /* Accent colors */
+  --accent: #ec4899;  /* Pink 500 */
+  --accent-light: #f472b6; /* Pink 400 */
+  --accent-dark: #db2777;  /* Pink 600 */
+  
+  /* Neutral colors */
+  --neutral-50: #fafafa;
+  --neutral-100: #f4f4f5;
+  --neutral-200: #e4e4e7;
+  --neutral-300: #d4d4d8;
+  --neutral-400: #a1a1aa;
+  --neutral-500: #71717a;
+  --neutral-600: #52525b;
+  --neutral-700: #3f3f46;
+  --neutral-800: #27272a;
+  --neutral-900: #18181b;
+  
+  /* Success, error, warning */
+  --success: #10b981;
+  --error: #ef4444;
+  --warning: #f59e0b;
+  --info: #3b82f6;
 }
 
-/* Gradient background for pages */
-.bg-gradient-custom {
-  background: linear-gradient(135deg, #E50087, #ff6ba5);
+/* Common component styling */
+.card {
+  @apply bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300;
 }
 
-/* Custom button styles */
-.btn-td {
-  background-color: #E50087;
-  color: white;
-  border: none;
+.card:hover {
+  @apply shadow-xl transform translate-y-[-4px];
 }
 
-.btn-td:hover {
-  background-color: #d10079;
+.btn-primary {
+  @apply px-6 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-medium rounded-full
+         hover:from-purple-700 hover:to-indigo-700 shadow-md hover:shadow-lg
+         focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50
+         transition-all duration-300 ease-in-out;
 }
 
-.text-td {
-  color: #E50087;
+.btn-secondary {
+  @apply px-6 py-2.5 bg-white text-purple-600 font-medium rounded-full border border-purple-600
+         hover:bg-purple-50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50
+         transition-all duration-300 ease-in-out;
 }
 
-.border-td {
-  border-color: #E50087;
+.input-field {
+  @apply px-4 py-2 border-2 border-neutral-200 rounded-lg focus:border-purple-500 
+         focus:outline-none focus:ring-2 focus:ring-purple-300 focus:ring-opacity-50
+         transition-colors duration-200;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  @apply font-bold;
+}
+
+h1 {
+  @apply text-4xl md:text-5xl lg:text-6xl tracking-tight;
+}
+
+h2 {
+  @apply text-3xl md:text-4xl tracking-tight;
+}
+
+h3 {
+  @apply text-2xl md:text-3xl;
+}
+
+/* Gradient backgrounds */
+.bg-gradient-primary {
+  @apply bg-gradient-to-r from-purple-600 to-indigo-600;
+}
+
+.bg-gradient-light {
+  @apply bg-gradient-to-r from-purple-50 to-indigo-50;
+}
+
+/* Text gradients */
+.text-gradient {
+  @apply bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent;
+}
+
+/* Animation utilities */
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+/* Animation for scroll elements */
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s, transform 0.6s;
+}
+
+.animate-fade-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Layout utilities */
+.container-custom {
+  @apply container mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+/* Hero section */
+.hero-section {
+  @apply min-h-[80vh] flex items-center;
+}
+
+/* Card grid */
+.card-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6;
+}
+
+/* Add this script to activate scroll animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-element {
+  animation: fadeInUp 0.6s ease-out forwards;
 }
