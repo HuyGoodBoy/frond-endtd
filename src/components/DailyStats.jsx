@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 const DailyStats = ({ type = "all" }) => {
-  const [stats, setStats] = useState({ cv_count: 0, company_count: 0 });
+  const [stats, setStats] = useState({ cv_count: 0, company_count: 0, message_count: 0 });
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -56,7 +56,7 @@ const DailyStats = ({ type = "all" }) => {
       <div className="bg-white rounded-xl shadow-sm p-4 border border-blue-100">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-gray-800">DN Đã Phân Tích</h3>
+            <h3 className="text-lg font-semibold text-gray-800">JD Đã Phân Tích</h3>
             <p className="text-sm text-gray-500">Hôm nay</p>
           </div>
           <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
@@ -67,14 +67,36 @@ const DailyStats = ({ type = "all" }) => {
         </div>
         <div className="mt-4">
           <span className="text-3xl font-bold text-blue-600">{stats.company_count}</span>
-          <span className="text-gray-500 text-lg ml-2">DN</span>
+          <span className="text-gray-500 text-lg ml-2">JD</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (type === "message") {
+    return (
+      <div className="bg-white rounded-xl shadow-sm p-4 border border-purple-100">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-lg font-semibold text-gray-800">Tin Nhắn Đã Xử Lý</h3>
+            <p className="text-sm text-gray-500">Hôm nay</p>
+          </div>
+          <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+            <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+            </svg>
+          </div>
+        </div>
+        <div className="mt-4">
+          <span className="text-3xl font-bold text-purple-600">{stats.message_count}</span>
+          <span className="text-gray-500 text-lg ml-2">Tin nhắn</span>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       <div className="bg-white rounded-xl shadow-sm p-4 border border-pink-100">
         <div className="flex items-center justify-between">
           <div>
@@ -96,7 +118,7 @@ const DailyStats = ({ type = "all" }) => {
       <div className="bg-white rounded-xl shadow-sm p-4 border border-blue-100">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-gray-800">DN Đã Phân Tích</h3>
+            <h3 className="text-lg font-semibold text-gray-800">JD Đã Phân Tích</h3>
             <p className="text-sm text-gray-500">Hôm nay</p>
           </div>
           <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
@@ -107,7 +129,25 @@ const DailyStats = ({ type = "all" }) => {
         </div>
         <div className="mt-4">
           <span className="text-3xl font-bold text-blue-600">{stats.company_count}</span>
-          <span className="text-gray-500 text-lg ml-2">DN</span>
+          <span className="text-gray-500 text-lg ml-2">JD</span>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl shadow-sm p-4 border border-purple-100">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-lg font-semibold text-gray-800">Tin Nhắn Đã Xử Lý</h3>
+            <p className="text-sm text-gray-500">Hôm nay</p>
+          </div>
+          <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+            <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+            </svg>
+          </div>
+        </div>
+        <div className="mt-4">
+          <span className="text-3xl font-bold text-purple-600">{stats.message_count}</span>
+          <span className="text-gray-500 text-lg ml-2">Tin nhắn</span>
         </div>
       </div>
     </div>

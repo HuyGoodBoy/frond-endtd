@@ -25,7 +25,7 @@ function App() {
           <Route path="/issue" element={<IssuePage />} />
           <Route path="/faq" element={<FAQPage />} />
           <Route path="/cv-evaluation" element={<CVEvaluationPage />} />
-          <Route path="/company-evaluation" element={<CompanyEvaluationPage />} />
+          <Route path="/jd-evaluation" element={<CompanyEvaluationPage />} />
         </Routes>
       </div>
     </HashRouter>

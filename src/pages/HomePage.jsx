@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Link } from "react-router-dom";
+import DailyStats from "../components/DailyStats";
 
 function HomePage() {
   // Add scroll reveal animation effect
@@ -146,6 +147,11 @@ function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Stats Section */}
+      <div className="container-custom py-12">
+        <DailyStats type="all" />
+      </div>
 
       {/* Add CSS for animations */}
       <style jsx="true">{`

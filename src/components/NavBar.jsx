@@ -55,7 +55,7 @@ function NavBar() {
         <div className="hidden md:flex items-center space-x-1">
           <NavItem to="/">Trang chủ</NavItem>
           <NavItem to="/cv-evaluation">Phân Tích CV</NavItem>
-          <NavItem to="/company-evaluation">Đánh Giá DN</NavItem>
+          <NavItem to="/jd-evaluation">Đánh Giá JD</NavItem>
           <NavItem to="/chat">Trợ Lý AI</NavItem>
           <NavItem to="/faq">Luyện Phỏng Vấn</NavItem>
           <NavItem to="/issue">Phản Hồi</NavItem>
@@ -92,7 +92,7 @@ function MobileMenuButton() {
         <div className="absolute top-16 left-0 right-0 bg-white shadow-lg rounded-b-lg p-4 space-y-2 transition-all duration-200">
           <MobileNavItem path="/" label="Trang chủ" onClick={() => { navigate("/"); setIsOpen(false); }} />
           <MobileNavItem path="/cv-evaluation" label="Phân Tích CV" onClick={() => { navigate("/cv-evaluation"); setIsOpen(false); }} />
-          <MobileNavItem path="/company-evaluation" label="Đánh Giá DN" onClick={() => { navigate("/company-evaluation"); setIsOpen(false); }} />
+          <MobileNavItem path="/jd-evaluation" label="Đánh Giá JD" onClick={() => { navigate("/jd-evaluation"); setIsOpen(false); }} />
           <MobileNavItem path="/chat" label="Trợ Lý AI" onClick={() => { navigate("/chat"); setIsOpen(false); }} />
           <MobileNavItem path="/faq" label="Luyện Phỏng Vấn" onClick={() => { navigate("/faq"); setIsOpen(false); }} />
           <MobileNavItem path="/issue" label="Phản Hồi" onClick={() => { navigate("/issue"); setIsOpen(false); }} />

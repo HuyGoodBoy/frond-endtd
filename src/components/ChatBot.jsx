@@ -5,6 +5,7 @@ import ScaleLoader from "react-spinners/ScaleLoader";
 import { TypeAnimation } from "react-type-animation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMessage, faPaperPlane, faUser, faRobot, faTrash, faCopy } from "@fortawesome/free-solid-svg-icons";
+import DailyStats from "./DailyStats";
 
 // API endpoint configuration
 const API_BASE_URL = "https://cv.tdconsulting.vn";
@@ -344,6 +345,11 @@ function ChatBot(props) {
           <p className="text-lg text-gray-700 max-w-2xl mx-auto">
             Nhận tư vấn nghề nghiệp cá nhân hóa, mẹo phỏng vấn và hướng dẫn tìm việc
           </p>
+        </div>
+
+        {/* Stats Section */}
+        <div className="max-w-4xl mx-auto mb-8">
+          <DailyStats type="message" />
         </div>
 
         {/* Chat Interface */}

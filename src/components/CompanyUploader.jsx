@@ -133,7 +133,7 @@ const CompanyUploader = ({ initialAnalysis }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!files) {
-      setError("Vui lòng tải lên thông tin doanh nghiệp");
+      setError("Vui lòng tải lên mô tả công việc (JD)");
       return;
     }
 
@@ -166,7 +166,7 @@ const CompanyUploader = ({ initialAnalysis }) => {
       
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.detail || 'Có lỗi khi phân tích thông tin doanh nghiệp');
+        throw new Error(errorData.detail || 'Có lỗi khi phân tích mô tả công việc');
       }
       
       const data = await response.json();
@@ -178,8 +178,8 @@ const CompanyUploader = ({ initialAnalysis }) => {
         setUploadProgress(0);
       }, 500);
     } catch (error) {
-      console.error("Error evaluating company:", error);
-      setError(error.message || 'Có lỗi xảy ra khi phân tích thông tin doanh nghiệp');
+      console.error("Error evaluating JD:", error);
+      setError(error.message || 'Có lỗi xảy ra khi phân tích mô tả công việc');
       setIsUploading(false);
       setUploadProgress(0);
     }
@@ -260,7 +260,7 @@ const CompanyUploader = ({ initialAnalysis }) => {
     // Tạo workbook và worksheet
     const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Thông tin doanh nghiệp");
+    XLSX.utils.book_append_sheet(wb, ws, "Mô tả công việc");
 
     // Tự động điều chỉnh độ rộng cột
     const maxWidth = data.reduce((w, r) => Math.max(w, r["Giá trị"].length), 10);
@@ -361,7 +361,7 @@ const CompanyUploader = ({ initialAnalysis }) => {
                   : 'bg-pink-600 hover:bg-pink-700 hover:shadow-lg'
               }`}
             >
-              {isUploading ? "Đang xử lý..." : "Phân tích doanh nghiệp"}
+              {isUploading ? "Đang xử lý..." : "Phân tích JD"}
             </button>
           </div>
         </form>
@@ -475,7 +475,7 @@ const CompanyUploader = ({ initialAnalysis }) => {
             onClick={() => setAnalysisResult(null)}
             className="w-full py-3 px-4 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors duration-300"
           >
-            Phân tích doanh nghiệp khác
+            Phân tích JD khác
           </button>
         </div>
       )}
