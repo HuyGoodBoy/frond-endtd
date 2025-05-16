@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import CompanyUploader from '../components/CompanyUploader';
+import DailyStats from '../components/DailyStats';
 
 const CompanyEvaluationPage = () => {
   const [activeTab, setActiveTab] = useState('upload');
@@ -37,6 +38,11 @@ const CompanyEvaluationPage = () => {
           <p className="text-lg text-gray-700 max-w-2xl mx-auto animate-fade-in">
             Sử dụng AI để phân tích thông tin doanh nghiệp, đánh giá mức độ đầy đủ thông tin và đề xuất cải thiện.
           </p>
+        </div>
+
+        {/* Stats Section */}
+        <div className="max-w-5xl mx-auto mb-8 animate-on-scroll">
+          <DailyStats type="company" />
         </div>
 
         {/* Main Content */}

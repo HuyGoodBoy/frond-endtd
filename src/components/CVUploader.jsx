@@ -1,24 +1,30 @@
 import { useState, useEffect } from "react";
 import * as XLSX from 'xlsx';
 
-const CVUploader = ({ initialAnalysis }) => {
+const CVUploader = ({ selectedAnalysis }) => {
   const [files, setFiles] = useState(null);
   const [jobDescription, setJobDescription] = useState("");
   const [jobDescriptionFile, setJobDescriptionFile] = useState(null); // File mô tả công việc
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [analysisResult, setAnalysisResult] = useState(initialAnalysis);
+  const [analysisResult, setAnalysisResult] = useState(selectedAnalysis);
   const [error, setError] = useState(null);
   const [useJobDescFile, setUseJobDescFile] = useState(false); // Toggle giữa text và file
 
   // Backend API URL
   const API_URL = "http://localhost:8000/evaluate-cv";
 
-  // Cập nhật kết quả khi initialAnalysis thay đổi
+  // Cập nhật kết quả khi selectedAnalysis thay đổi
   useEffect(() => {
-    setAnalysisResult(initialAnalysis);
-  }, [initialAnalysis]);
+    if (selectedAnalysis) {
+      console.log("Selected Analysis:", selectedAnalysis); // Để debug
+      setAnalysisResult(selectedAnalysis);
+      setFiles(null); // Reset file input khi xem kết quả từ lịch sử
+      setJobDescription(""); // Reset job description
+      setJobDescriptionFile(null); // Reset job description file
+    }
+  }, [selectedAnalysis]);
 
   // Hàm lưu kết quả phân tích vào localStorage
   const saveAnalysisToHistory = (result, fileName) => {
@@ -26,7 +32,7 @@ const CVUploader = ({ initialAnalysis }) => {
       const history = JSON.parse(localStorage.getItem('cvAnalysisHistory') || '[]');
       const newAnalysis = {
         id: Date.now(),
-        date: new Date().toISOString(),
+        timestamp: new Date().toISOString(),
         fileName: fileName,
         result: result
       };

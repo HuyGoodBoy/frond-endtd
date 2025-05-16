@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMessage, faPaperPlane, faUser, faRobot, faTrash, faCopy } from "@fortawesome/free-solid-svg-icons";
 
 // API endpoint configuration
-const API_BASE_URL = "https://cv.tdconsulting.vn";
+const API_BASE_URL = "http://localhost:8000";
 
 function ChatBot(props) {
   const messagesEndRef = useRef(null);
