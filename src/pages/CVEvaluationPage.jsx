@@ -3,7 +3,20 @@ import CVUploader from "../components/CVUploader";
 
 const CVEvaluationPage = () => {
   const [activeTab, setActiveTab] = useState('upload');
+  const [analysisHistory, setAnalysisHistory] = useState([]);
+  const [selectedAnalysis, setSelectedAnalysis] = useState(null);
   
+  // Load lịch sử đánh giá từ localStorage
+  useEffect(() => {
+    try {
+      const history = JSON.parse(localStorage.getItem('cvAnalysisHistory') || '[]');
+      setAnalysisHistory(history);
+    } catch (error) {
+      console.error('Error loading analysis history:', error);
+      setAnalysisHistory([]);
+    }
+  }, [activeTab]); // Reload khi chuyển tab
+
   // Add useEffect to initialize animations immediately
   useEffect(() => {
     const elements = document.querySelectorAll('.animate-on-scroll');
@@ -11,6 +24,36 @@ const CVEvaluationPage = () => {
       element.classList.add('animate-fade-in');
     });
   }, []);
+
+  // Format date string
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat('vi-VN', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    }).format(date);
+  };
+
+  // Xóa một kết quả phân tích khỏi lịch sử
+  const deleteAnalysis = (id) => {
+    try {
+      const history = JSON.parse(localStorage.getItem('cvAnalysisHistory') || '[]');
+      const updatedHistory = history.filter(item => item.id !== id);
+      localStorage.setItem('cvAnalysisHistory', JSON.stringify(updatedHistory));
+      setAnalysisHistory(updatedHistory);
+    } catch (error) {
+      console.error('Error deleting analysis:', error);
+    }
+  };
+
+  // Xem lại kết quả phân tích
+  const viewAnalysis = (result) => {
+    setSelectedAnalysis(result);
+    setActiveTab('upload');
+  };
   
   return (
     <div className="pt-20 pb-20 bg-gradient-light min-h-screen">
@@ -67,31 +110,97 @@ const CVEvaluationPage = () => {
           {activeTab === 'upload' && (
             <div className="p-8">
               <div className="mb-10">
-                <h2 className="text-2xl font-bold text-gray-800 mb-4">Tải CV Của Bạn</h2>
+                <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                  {selectedAnalysis ? 'Kết Quả Phân Tích CV' : 'Tải CV Của Bạn'}
+                </h2>
                 <p className="text-gray-600">
-                  Tải CV của bạn lên để nhận phân tích chi tiết và các đề xuất cá nhân hóa để tăng cơ hội được chú ý bởi nhà tuyển dụng.
+                  {selectedAnalysis 
+                    ? 'Dưới đây là kết quả phân tích chi tiết CV của bạn.'
+                    : 'Tải CV của bạn lên để nhận phân tích chi tiết và các đề xuất cá nhân hóa để tăng cơ hội được chú ý bởi nhà tuyển dụng.'}
                 </p>
               </div>
               
-              <CVUploader />
+              <CVUploader initialAnalysis={selectedAnalysis} />
             </div>
           )}
           
           {activeTab === 'history' && (
-            <div className="p-8 text-center">
-              <div className="py-12">
-                <svg className="w-20 h-20 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <h3 className="text-xl font-medium text-gray-600">Không tìm thấy đánh giá trước đây</h3>
-                <p className="text-gray-500 mt-2">Khi bạn phân tích CV, kết quả sẽ xuất hiện ở đây</p>
-                <button 
-                  onClick={() => setActiveTab('upload')}
-                  className="btn-primary mt-6"
-                >
-                  Tải CV Đầu Tiên
-                </button>
-              </div>
+            <div className="p-8">
+              {analysisHistory.length > 0 ? (
+                <div className="space-y-6">
+                  <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-2xl font-bold text-gray-800">Lịch Sử Đánh Giá CV</h2>
+                    <p className="text-sm text-gray-500">
+                      {analysisHistory.length} kết quả gần nhất
+                    </p>
+                  </div>
+
+                  {analysisHistory.map((item) => (
+                    <div key={item.id} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h3 className="font-semibold text-lg text-gray-800 mb-2">
+                            {item.fileName}
+                          </h3>
+                          <p className="text-sm text-gray-500">
+                            Phân tích ngày: {formatDate(item.date)}
+                          </p>
+                          {item.result.job_compatibility && (
+                            <div className="mt-3">
+                              <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm ${
+                                item.result.job_compatibility.compatibility_score >= 75
+                                  ? 'bg-green-100 text-green-800'
+                                  : item.result.job_compatibility.compatibility_score >= 50
+                                    ? 'bg-amber-100 text-amber-800'
+                                    : 'bg-red-100 text-red-800'
+                              }`}>
+                                Độ phù hợp: {item.result.job_compatibility.compatibility_score}%
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                        
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => viewAnalysis(item.result)}
+                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            title="Xem chi tiết"
+                          >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                          </button>
+                          
+                          <button
+                            onClick={() => deleteAnalysis(item.id)}
+                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            title="Xóa kết quả"
+                          >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-12">
+                  <svg className="w-20 h-20 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <h3 className="text-xl font-medium text-gray-600">Không tìm thấy đánh giá trước đây</h3>
+                  <p className="text-gray-500 mt-2">Khi bạn phân tích CV, kết quả sẽ xuất hiện ở đây</p>
+                  <button 
+                    onClick={() => setActiveTab('upload')}
+                    className="btn-primary mt-6"
+                  >
+                    Tải CV Đầu Tiên
+                  </button>
+                </div>
+              )}
             </div>
           )}
           

@@ -30,7 +30,7 @@ function NavBar() {
         <div onClick={() => navigate("/")} className="cursor-pointer flex items-center space-x-2">
           <img src="./logo.png" alt="Logo" className="w-10 h-10 object-contain" />
           <span className="font-bold text-xl bg-gradient-to-r from-pink-600 to-pink-700 bg-clip-text text-transparent">
-            CareerBoost
+            TDCareerBoost
           </span>
         </div>
         
@@ -38,6 +38,7 @@ function NavBar() {
         <div className="hidden md:flex items-center space-x-1">
           <NavItem path="/" label="Trang chủ" isActive={isActive("/")} navigate={navigate} />
           <NavItem path="/cv-evaluation" label="Phân Tích CV" isActive={isActive("/cv-evaluation")} navigate={navigate} />
+          <NavItem path="/company-evaluation" label="Đánh Giá DN" isActive={isActive("/company-evaluation")} navigate={navigate} />
           <NavItem path="/chat" label="Trợ Lý AI" isActive={isActive("/chat")} navigate={navigate} />
           <NavItem path="/faq" label="Luyện Phỏng Vấn" isActive={isActive("/faq")} navigate={navigate} />
           <NavItem path="/issue" label="Phản Hồi" isActive={isActive("/issue")} navigate={navigate} />
@@ -89,6 +90,7 @@ function MobileMenuButton() {
         <div className="absolute top-16 left-0 right-0 bg-white shadow-lg rounded-b-lg p-4 space-y-2 transition-all duration-200">
           <MobileNavItem path="/" label="Trang chủ" onClick={() => { navigate("/"); setIsOpen(false); }} />
           <MobileNavItem path="/cv-evaluation" label="Phân Tích CV" onClick={() => { navigate("/cv-evaluation"); setIsOpen(false); }} />
+          <MobileNavItem path="/company-evaluation" label="Đánh Giá DN" onClick={() => { navigate("/company-evaluation"); setIsOpen(false); }} />
           <MobileNavItem path="/chat" label="Trợ Lý AI" onClick={() => { navigate("/chat"); setIsOpen(false); }} />
           <MobileNavItem path="/faq" label="Luyện Phỏng Vấn" onClick={() => { navigate("/faq"); setIsOpen(false); }} />
           <MobileNavItem path="/issue" label="Phản Hồi" onClick={() => { navigate("/issue"); setIsOpen(false); }} />

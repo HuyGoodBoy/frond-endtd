@@ -6,6 +6,7 @@ import ChatBot from "./components/ChatBot";
 import FAQPage from "./pages/FAQPage"
 import IssuePage from "./pages/IssuePage";
 import CVEvaluationPage from "./pages/CVEvaluationPage";
+import CompanyEvaluationPage from "./pages/CompanyEvaluationPage";
 import { HashRouter, Routes, Route, Link } from "react-router-dom";
 // import ImgGen from "./components/ImgGen";
 import ScaleLoader from "react-spinners/ScaleLoader";
@@ -24,6 +25,7 @@ function App() {
           <Route path="/issue" element={<IssuePage />} />
           <Route path="/faq" element={<FAQPage />} />
           <Route path="/cv-evaluation" element={<CVEvaluationPage />} />
+          <Route path="/company-evaluation" element={<CompanyEvaluationPage />} />
         </Routes>
       </div>
     </HashRouter>

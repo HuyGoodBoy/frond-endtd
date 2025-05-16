@@ -30,7 +30,7 @@ function HomePage() {
             {/* Hero Content */}
             <div className="max-w-2xl animate-on-scroll">
               <span className="inline-block px-4 py-2 bg-pink-100 text-pink-800 rounded-full text-sm font-medium mb-4">
-                Phát Triển Sự Nghiệp Với AI
+                Phát Triển Sự Nghiệp Với TDCareerBoost
               </span>
               
               <h1 className="mb-6">
@@ -38,7 +38,7 @@ function HomePage() {
               </h1>
               
               <p className="text-lg text-gray-700 mb-8">
-                AI tiên tiến của chúng tôi phân tích CV, chuẩn bị cho bạn phỏng vấn, và đưa ra lời khuyên nghề nghiệp phù hợp để giúp bạn nổi bật trên thị trường việc làm.
+                TDCareerBoost sử dụng AI tiên tiến để phân tích CV, chuẩn bị cho bạn phỏng vấn, và đưa ra lời khuyên nghề nghiệp phù hợp để giúp bạn nổi bật trên thị trường việc làm.
               </p>
               
               <div className="flex flex-wrap gap-4">
@@ -98,7 +98,7 @@ function HomePage() {
       <section className="py-20">
         <div className="container-custom">
           <div className="text-center mb-16 animate-on-scroll">
-            <h2 className="text-gradient mb-4">Khám Phá Tiềm Năng Sự Nghiệp</h2>
+            <h2 className="text-gradient mb-4">Khám Phá Tiềm Năng Sự Nghiệp Với TDCareerBoost</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Nền tảng của chúng tôi cung cấp các công cụ mạnh mẽ để hỗ trợ bạn trong mọi bước trên con đường sự nghiệp
             </p>

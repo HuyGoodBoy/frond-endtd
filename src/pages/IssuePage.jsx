@@ -106,11 +106,11 @@ function IssuePage() {
         {/* Header */}
         <div className="max-w-4xl mx-auto text-center mb-12 animate-on-scroll">
           <span className="inline-block px-4 py-2 bg-purple-100 text-purple-800 rounded-full text-sm font-medium mb-4">
-            We Value Your Feedback
+            Chúng tôi trân trọng phản hồi của bạn
           </span>
-          <h1 className="text-gradient mb-6">Help Us Improve</h1>
+          <h1 className="text-gradient mb-6">Giúp chúng tôi cải thiện</h1>
           <p className="text-lg text-gray-700 max-w-2xl mx-auto">
-            Your feedback helps us enhance our platform and provide better services. Share your thoughts, report issues, or suggest new features.
+            Phản hồi của bạn giúp chúng tôi nâng cao nền tảng và cung cấp dịch vụ tốt hơn. Chia sẻ suy nghĩ, báo cáo vấn đề hoặc đề xuất tính năng mới.
           </p>
         </div>
         
@@ -122,27 +122,27 @@ function IssuePage() {
                 {/* Feedback Type Selection */}
                 <div className="mb-6">
                   <label className="block text-gray-700 font-medium mb-3">
-                    Feedback Type
+                    Loại phản hồi
                   </label>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <FeedbackTypeButton 
                       type="suggestion"
                       icon={faLightbulb}
-                      label="Suggestion"
+                      label="Đề xuất"
                       active={feedbackType === "suggestion"}
                       onClick={() => setFeedbackType("suggestion")}
                     />
                     <FeedbackTypeButton 
                       type="issue"
                       icon={faExclamationTriangle}
-                      label="Report Issue"
+                      label="Báo cáo lỗi"
                       active={feedbackType === "issue"}
                       onClick={() => setFeedbackType("issue")}
                     />
                     <FeedbackTypeButton 
                       type="praise"
                       icon={faCheckCircle}
-                      label="Praise"
+                      label="Đánh giá tốt"
                       active={feedbackType === "praise"}
                       onClick={() => setFeedbackType("praise")}
                     />
@@ -152,29 +152,29 @@ function IssuePage() {
                 {/* Feedback Text */}
                 <div className="mb-6">
                   <label htmlFor="feedback" className="block text-gray-700 font-medium mb-2">
-                    Your Feedback
+                    Phản hồi của bạn
                   </label>
                   <textarea
                     id="feedback"
                     rows={5}
                     placeholder={feedbackType === "suggestion" 
-                      ? "Share your ideas on how we can improve..." 
+                      ? "Chia sẻ ý kiến của bạn về cách chúng tôi có thể cải thiện..." 
                       : feedbackType === "issue" 
-                        ? "Please describe the issue you encountered in detail..." 
-                        : "Tell us what you liked about our platform..."}
+                        ? "Vui lòng mô tả chi tiết vấn đề bạn gặp phải..." 
+                        : "Hãy cho chúng tôi biết điều bạn thích về nền tảng của chúng tôi..."}
                     className={`input-field w-full ${formErrors.feedback ? 'border-red-500 focus:ring-red-200' : ''}`}
                     value={feedback}
                     onChange={(e) => setFeedback(e.target.value)}
                   ></textarea>
                   {formErrors.feedback && (
-                    <p className="mt-1 text-sm text-red-500">{formErrors.feedback}</p>
+                    <p className="mt-1 text-sm text-red-500">Vui lòng nhập phản hồi của bạn</p>
                   )}
                 </div>
                 
                 {/* Email */}
                 <div className="mb-8">
                   <label htmlFor="email" className="block text-gray-700 font-medium mb-2">
-                    Your Email (optional)
+                    Email của bạn (không bắt buộc)
                   </label>
                   <input
                     type="email"
@@ -185,10 +185,10 @@ function IssuePage() {
                     onChange={(e) => setEmail(e.target.value)}
                   />
                   {formErrors.email && (
-                    <p className="mt-1 text-sm text-red-500">{formErrors.email}</p>
+                    <p className="mt-1 text-sm text-red-500">Vui lòng nhập địa chỉ email hợp lệ</p>
                   )}
                   <p className="mt-1 text-xs text-gray-500">
-                    We'll only use this to contact you if we need more information.
+                    Chúng tôi chỉ sử dụng email này để liên hệ khi cần thêm thông tin.
                   </p>
                 </div>
                 
@@ -206,12 +206,12 @@ function IssuePage() {
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>
-                      Submitting...
+                      Đang gửi...
                     </div>
                   ) : (
                     <>
                       <FontAwesomeIcon icon={faPaperPlane} className="mr-2" />
-                      Submit Feedback
+                      Gửi phản hồi
                     </>
                   )}
                 </button>
@@ -222,16 +222,16 @@ function IssuePage() {
           {/* Additional Information */}
           <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-8">
             <div className="bg-white p-6 rounded-xl shadow-md">
-              <h3 className="text-gradient font-semibold text-lg mb-3">How We Use Your Feedback</h3>
+              <h3 className="text-gradient font-semibold text-lg mb-3">Cách chúng tôi sử dụng phản hồi</h3>
               <p className="text-gray-700">
-                We carefully review all feedback to improve our platform. Your suggestions help shape our future updates and enhancements.
+                Chúng tôi xem xét cẩn thận tất cả các phản hồi để cải thiện nền tảng. Những đề xuất của bạn giúp định hình các cập nhật và cải tiến trong tương lai.
               </p>
             </div>
             
             <div className="bg-white p-6 rounded-xl shadow-md">
-              <h3 className="text-gradient font-semibold text-lg mb-3">Response Time</h3>
+              <h3 className="text-gradient font-semibold text-lg mb-3">Thời gian phản hồi</h3>
               <p className="text-gray-700">
-                If you've provided your email, we aim to respond to critical issues within 48 hours. General feedback is collected and reviewed periodically.
+                Nếu bạn đã cung cấp email, chúng tôi sẽ cố gắng phản hồi các vấn đề quan trọng trong vòng 48 giờ. Các phản hồi chung sẽ được thu thập và xem xét định kỳ.
               </p>
             </div>
           </div>
@@ -246,15 +246,15 @@ function IssuePage() {
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <FontAwesomeIcon icon={faCheckCircle} className="text-green-500 text-2xl" />
               </div>
-              <h3 className="text-xl font-bold text-gray-800 mb-2">Thank You for Your Feedback!</h3>
+              <h3 className="text-xl font-bold text-gray-800 mb-2">Cảm ơn phản hồi của bạn!</h3>
               <p className="text-gray-600 mb-6">
-                We appreciate your input and will use it to improve our platform. Your feedback helps us create a better experience for everyone.
+                Chúng tôi đánh giá cao ý kiến đóng góp của bạn và sẽ sử dụng nó để cải thiện nền tảng. Phản hồi của bạn giúp chúng tôi tạo ra trải nghiệm tốt hơn cho mọi người.
               </p>
               <button 
                 onClick={() => setShowModal(false)}
                 className="btn-primary w-full"
               >
-                Close
+                Đóng
               </button>
             </div>
           </div>
