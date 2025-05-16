@@ -1,15 +1,16 @@
 {
-  "name": "ai-tool",
+  "name": "frond-end",
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "homepage": "https://tdconsulting.vn/cvtd/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "predeploy": "node deploy.js",
-    "deploy": "gh-pages -d gh-pages",
-    "deploy:custom": "node gh-pages-fix.js"
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@emailjs/browser": "^3.11.0",
@@ -38,6 +39,5 @@
     "postcss": "^8.4.21",
     "tailwindcss": "^3.2.4",
     "vite": "^4.0.0"
-  },
-  "homepage": "."
+  }
 }
