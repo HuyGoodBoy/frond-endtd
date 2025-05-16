@@ -21,21 +21,21 @@ function ChatBot(props) {
     [
       "start",
       [
-        "Hello! I'm your AI career assistant. I can help you prepare for interviews, give CV advice, and answer questions about job searching and career development.",
+        "Xin chào! Tôi là trợ lý AI về nghề nghiệp của bạn. Tôi có thể giúp bạn chuẩn bị phỏng vấn, tư vấn về CV và trả lời các câu hỏi về tìm việc và phát triển sự nghiệp.",
         null,
       ],
     ],
   ]);
 
-  // Common interview questions in English
+  // Common interview questions in Vietnamese
   const commonQuestions = [
-    "Tell me about yourself",
-    "What are your strengths and weaknesses?",
-    "Why do you want to work at our company?",
-    "How do you handle pressure or stressful situations?",
-    "Where do you see yourself in 5 years?",
-    "How did you handle conflict in your previous role?",
-    "Do you have any questions for us?",
+    "Hãy giới thiệu về bản thân",
+    "Điểm mạnh và điểm yếu của bạn là gì?",
+    "Tại sao bạn muốn làm việc tại công ty chúng tôi?",
+    "Bạn xử lý áp lực hoặc tình huống căng thẳng như thế nào?",
+    "Bạn thấy mình ở đâu trong 5 năm tới?",
+    "Bạn đã xử lý xung đột trong công việc trước đây như thế nào?",
+    "Bạn có câu hỏi nào cho chúng tôi không?",
   ];
 
   // Pre-defined question-answer pairs
@@ -317,7 +317,7 @@ function ChatBot(props) {
       [
         "start",
         [
-          "Hello! I'm your AI career assistant. I can help you prepare for interviews, give CV advice, and answer questions about job searching and career development.",
+          "Xin chào! Tôi là trợ lý AI về nghề nghiệp của bạn. Tôi có thể giúp bạn chuẩn bị phỏng vấn, tư vấn về CV và trả lời các câu hỏi về tìm việc và phát triển sự nghiệp.",
           null,
         ],
       ],
@@ -340,9 +340,9 @@ function ChatBot(props) {
       <div className="container-custom">
         {/* Header */}
         <div className="max-w-4xl mx-auto mb-8 text-center">
-          <h1 className="text-gradient mb-3">Career Assistant</h1>
+          <h1 className="text-gradient mb-3">Trợ Lý Nghề Nghiệp</h1>
           <p className="text-lg text-gray-700 max-w-2xl mx-auto">
-            Get personalized career advice, interview tips, and job search guidance
+            Nhận tư vấn nghề nghiệp cá nhân hóa, mẹo phỏng vấn và hướng dẫn tìm việc
           </p>
         </div>
 
@@ -351,18 +351,18 @@ function ChatBot(props) {
           {/* Chat Controls */}
           <div className="p-4 border-b border-gray-100 flex justify-between items-center">
             <div className="flex items-center">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 flex items-center justify-center text-white">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-pink-600 to-pink-700 flex items-center justify-center text-white">
                 <FontAwesomeIcon icon={faRobot} />
               </div>
               <div className="ml-3">
-                <h3 className="font-medium text-gray-800">CareerBoost Assistant</h3>
-                <p className="text-xs text-gray-500">Powered by AI</p>
+                <h3 className="font-medium text-gray-800">Trợ Lý CareerBoost</h3>
+                <p className="text-xs text-gray-500">Được hỗ trợ bởi AI</p>
               </div>
             </div>
             <button 
               onClick={clearChat}
               className="p-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100 transition-colors"
-              title="Clear chat history"
+              title="Xóa lịch sử trò chuyện"
             >
               <FontAwesomeIcon icon={faTrash} />
             </button>
@@ -377,7 +377,7 @@ function ChatBot(props) {
                 if (sender === "start") {
                   return (
                     <div key={index} className="flex justify-center mb-6">
-                      <div className="bg-indigo-50 p-4 rounded-xl max-w-[80%]">
+                      <div className="bg-pink-50 p-4 rounded-xl max-w-[80%]">
                         <p className="text-gray-700">{message}</p>
                       </div>
                     </div>
@@ -393,7 +393,7 @@ function ChatBot(props) {
                   >
                     <div className="flex items-start max-w-[80%]">
                       {!isUser && (
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 flex items-center justify-center text-white mr-2 flex-shrink-0 mt-1">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-r from-pink-600 to-pink-700 flex items-center justify-center text-white mr-2 flex-shrink-0 mt-1">
                           <FontAwesomeIcon icon={faRobot} className="text-xs" />
                         </div>
                       )}
@@ -401,7 +401,7 @@ function ChatBot(props) {
                       <div 
                         className={`p-3 rounded-2xl ${
                           isUser 
-                            ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white" 
+                            ? "bg-gradient-to-r from-pink-600 to-pink-700 text-white" 
                             : "bg-gray-100 text-gray-800"
                         }`}
                       >
@@ -427,7 +427,7 @@ function ChatBot(props) {
                       </div>
                       
                       {isUser && (
-                        <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 ml-2 flex-shrink-0 mt-1">
+                        <div className="w-8 h-8 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 ml-2 flex-shrink-0 mt-1">
                           <FontAwesomeIcon icon={faUser} className="text-xs" />
                         </div>
                       )}
@@ -439,7 +439,7 @@ function ChatBot(props) {
               {isLoading && (
                 <div className="flex justify-start">
                   <div className="flex items-start max-w-[80%]">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 flex items-center justify-center text-white mr-2 flex-shrink-0 mt-1">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-pink-600 to-pink-700 flex items-center justify-center text-white mr-2 flex-shrink-0 mt-1">
                       <FontAwesomeIcon icon={faRobot} className="text-xs" />
                     </div>
                     <div className="p-4 bg-gray-100 rounded-2xl">
@@ -469,7 +469,7 @@ function ChatBot(props) {
                     SetPromptInput(question);
                     if (chatInputRef.current) chatInputRef.current.focus();
                   }}
-                  className="px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded-full hover:bg-purple-100 hover:text-purple-700 transition-colors truncate max-w-[200px]"
+                  className="px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded-full hover:bg-pink-100 hover:text-pink-700 transition-colors truncate max-w-[200px]"
                 >
                   {question}
                 </button>
@@ -479,11 +479,11 @@ function ChatBot(props) {
 
           {/* Input Area */}
           <div className="p-4 border-t border-gray-100">
-            <div className="flex items-center bg-gray-50 rounded-xl px-4 py-2 focus-within:ring-2 focus-within:ring-purple-300 focus-within:bg-white transition-all">
+            <div className="flex items-center bg-gray-50 rounded-xl px-4 py-2 focus-within:ring-2 focus-within:ring-pink-300 focus-within:bg-white transition-all">
               <textarea
                 ref={chatInputRef}
                 className="flex-grow bg-transparent border-none focus:outline-none resize-none py-2 max-h-32"
-                placeholder="Type your question here..."
+                placeholder="Nhập câu hỏi của bạn tại đây..."
                 value={promptInput}
                 onChange={onChangeHandler}
                 onKeyDown={handleKeyDown}
@@ -495,14 +495,14 @@ function ChatBot(props) {
                 className={`ml-2 w-10 h-10 flex-shrink-0 rounded-full flex items-center justify-center transition-colors ${
                   isLoading || !promptInput.trim()
                     ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                    : "bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:from-purple-700 hover:to-indigo-700"
+                    : "bg-gradient-to-r from-pink-600 to-pink-700 text-white hover:from-pink-700 hover:to-pink-800"
                 }`}
               >
                 <FontAwesomeIcon icon={faPaperPlane} />
               </button>
             </div>
             <p className="text-xs text-gray-500 mt-2 text-center">
-              Note: This assistant is designed to provide career advice. For personal or non-career related questions, please use a general-purpose assistant.
+              Lưu ý: Trợ lý này được thiết kế để tư vấn nghề nghiệp. Đối với các câu hỏi cá nhân hoặc không liên quan đến nghề nghiệp, vui lòng sử dụng trợ lý đa năng.
             </p>
           </div>
         </div>

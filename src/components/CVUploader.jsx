@@ -159,7 +159,7 @@ const CVUploader = () => {
       
       return (
         <div className="border border-gray-100 rounded-lg p-3 mb-2 hover:shadow-sm transition-all bg-gray-50">
-          <h6 className="font-semibold text-purple-700 mb-1">{projectName}</h6>
+          <h6 className="font-semibold text-pink-700 mb-1">{projectName}</h6>
           
           {purpose && (
             <div className="mb-2">
@@ -195,12 +195,12 @@ const CVUploader = () => {
     return (
       <div className="border border-gray-100 rounded-lg p-3 mb-2 hover:shadow-sm transition-all bg-gray-50">
         {project["Tên dự án"] && (
-          <h6 className="font-semibold text-purple-700 mb-1">{project["Tên dự án"]}</h6>
+          <h6 className="font-semibold text-pink-700 mb-1">{project["Tên dự án"]}</h6>
         )}
         
         {project["Thời gian thực hiện"] && (
           <div className="text-xs text-gray-500 mb-2">
-            <span className="bg-purple-100 text-purple-600 px-2 py-0.5 rounded-full">
+            <span className="bg-pink-100 text-pink-600 px-2 py-0.5 rounded-full">
               {project["Thời gian thực hiện"]}
             </span>
           </div>
@@ -273,7 +273,7 @@ const CVUploader = () => {
               const project = projectData[projectName] || { name: projectName };
               return (
                 <div key={idx} className="border border-gray-100 rounded-lg p-4 hover:shadow-md transition-all bg-gray-50">
-                  <h6 className="font-semibold text-purple-700 mb-2">{project.name}</h6>
+                  <h6 className="font-semibold text-pink-700 mb-2">{project.name}</h6>
                   
                   {project.purpose && (
                     <div className="mb-3">
@@ -356,7 +356,7 @@ const CVUploader = () => {
           {value.map((item, idx) => (
             <span 
               key={idx} 
-              className="px-2 py-1 bg-purple-50 text-purple-700 text-xs rounded"
+              className="px-2 py-1 bg-pink-50 text-pink-700 text-xs rounded"
             >
               {typeof item === 'object' ? JSON.stringify(item) : String(item)}
             </span>
@@ -443,10 +443,10 @@ const CVUploader = () => {
             <div 
               className={`border-2 border-dashed rounded-xl p-6 transition-all duration-300 flex flex-col items-center justify-center ${
                 isDragging 
-                  ? 'border-purple-500 bg-purple-50' 
+                  ? 'border-pink-500 bg-pink-50' 
                   : files 
                     ? 'border-green-400 bg-green-50' 
-                    : 'border-gray-300 hover:border-purple-400'
+                    : 'border-gray-300 hover:border-pink-400'
               }`}
               onDragEnter={handleDragEnter}
               onDragLeave={handleDragLeave}
@@ -455,7 +455,7 @@ const CVUploader = () => {
             >
               {!files ? (
                 <div className="text-center py-8">
-                  <svg className="w-12 h-12 mx-auto text-purple-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <svg className="w-12 h-12 mx-auto text-pink-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                   </svg>
                   <h4 className="text-lg font-medium text-gray-700 mb-2">
@@ -482,8 +482,8 @@ const CVUploader = () => {
                 <div className="w-full">
                   <div className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-100 mb-4">
                     <div className="flex items-center">
-                      <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mr-3">
-                        <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <div className="w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center mr-3">
+                        <svg className="w-6 h-6 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
                       </div>
@@ -528,14 +528,14 @@ const CVUploader = () => {
                 <button 
                   type="button" 
                   onClick={toggleJobDescriptionMode}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-full transition ${!useJobDescFile ? 'bg-purple-600 text-white' : 'bg-gray-200 text-gray-700'}`}
+                  className={`px-3 py-1.5 text-xs font-medium rounded-full transition ${!useJobDescFile ? 'bg-pink-600 text-white' : 'bg-gray-200 text-gray-700'}`}
                 >
                   Nhập văn bản
                 </button>
                 <button 
                   type="button" 
                   onClick={toggleJobDescriptionMode}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-full transition ${useJobDescFile ? 'bg-purple-600 text-white' : 'bg-gray-200 text-gray-700'}`}
+                  className={`px-3 py-1.5 text-xs font-medium rounded-full transition ${useJobDescFile ? 'bg-pink-600 text-white' : 'bg-gray-200 text-gray-700'}`}
                 >
                   Tải file
                 </button>
@@ -564,7 +564,7 @@ const CVUploader = () => {
               <div>
                 {!jobDescriptionFile ? (
                   <div className="border-2 border-dashed rounded-lg p-6 transition-all duration-300 text-center">
-                    <svg className="w-10 h-10 mx-auto text-purple-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <svg className="w-10 h-10 mx-auto text-pink-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                     <p className="text-sm text-gray-500 mb-3">
@@ -587,8 +587,8 @@ const CVUploader = () => {
                 ) : (
                   <div className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-100">
                     <div className="flex items-center">
-                      <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center mr-3">
-                        <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <div className="w-8 h-8 bg-pink-100 rounded-lg flex items-center justify-center mr-3">
+                        <svg className="w-4 h-4 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
                       </div>

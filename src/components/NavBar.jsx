@@ -28,10 +28,8 @@ function NavBar() {
       <div className="container mx-auto px-4 flex justify-between items-center">
         {/* Logo */}
         <div onClick={() => navigate("/")} className="cursor-pointer flex items-center space-x-2">
-          <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-indigo-800 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-xl">TD</span>
-          </div>
-          <span className="font-bold text-xl bg-gradient-to-r from-purple-600 to-indigo-800 bg-clip-text text-transparent">
+          <img src="./logo.png" alt="Logo" className="w-10 h-10 object-contain" />
+          <span className="font-bold text-xl bg-gradient-to-r from-pink-600 to-pink-700 bg-clip-text text-transparent">
             CareerBoost
           </span>
         </div>
@@ -39,10 +37,10 @@ function NavBar() {
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center space-x-1">
           <NavItem path="/" label="Trang chủ" isActive={isActive("/")} navigate={navigate} />
-          <NavItem path="/cv-evaluation" label="CV Analyzer" isActive={isActive("/cv-evaluation")} navigate={navigate} />
-          <NavItem path="/chat" label="Career Assistant" isActive={isActive("/chat")} navigate={navigate} />
-          <NavItem path="/faq" label="Interview Prep" isActive={isActive("/faq")} navigate={navigate} />
-          <NavItem path="/issue" label="Feedback" isActive={isActive("/issue")} navigate={navigate} />
+          <NavItem path="/cv-evaluation" label="Phân Tích CV" isActive={isActive("/cv-evaluation")} navigate={navigate} />
+          <NavItem path="/chat" label="Trợ Lý AI" isActive={isActive("/chat")} navigate={navigate} />
+          <NavItem path="/faq" label="Luyện Phỏng Vấn" isActive={isActive("/faq")} navigate={navigate} />
+          <NavItem path="/issue" label="Phản Hồi" isActive={isActive("/issue")} navigate={navigate} />
         </div>
         
         {/* Mobile Menu Button */}
@@ -58,7 +56,7 @@ function NavItem({ path, label, isActive, navigate }) {
       onClick={() => navigate(path)} 
       className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
         isActive 
-          ? 'bg-gradient-to-r from-purple-600 to-indigo-800 text-white' 
+          ? 'bg-gradient-to-r from-pink-600 to-pink-700 text-white' 
           : 'text-gray-700 hover:bg-gray-100'
       }`}
     >
@@ -90,10 +88,10 @@ function MobileMenuButton() {
       {isOpen && (
         <div className="absolute top-16 left-0 right-0 bg-white shadow-lg rounded-b-lg p-4 space-y-2 transition-all duration-200">
           <MobileNavItem path="/" label="Trang chủ" onClick={() => { navigate("/"); setIsOpen(false); }} />
-          <MobileNavItem path="/cv-evaluation" label="CV Analyzer" onClick={() => { navigate("/cv-evaluation"); setIsOpen(false); }} />
-          <MobileNavItem path="/chat" label="Career Assistant" onClick={() => { navigate("/chat"); setIsOpen(false); }} />
-          <MobileNavItem path="/faq" label="Interview Prep" onClick={() => { navigate("/faq"); setIsOpen(false); }} />
-          <MobileNavItem path="/issue" label="Feedback" onClick={() => { navigate("/issue"); setIsOpen(false); }} />
+          <MobileNavItem path="/cv-evaluation" label="Phân Tích CV" onClick={() => { navigate("/cv-evaluation"); setIsOpen(false); }} />
+          <MobileNavItem path="/chat" label="Trợ Lý AI" onClick={() => { navigate("/chat"); setIsOpen(false); }} />
+          <MobileNavItem path="/faq" label="Luyện Phỏng Vấn" onClick={() => { navigate("/faq"); setIsOpen(false); }} />
+          <MobileNavItem path="/issue" label="Phản Hồi" onClick={() => { navigate("/issue"); setIsOpen(false); }} />
         </div>
       )}
     </div>

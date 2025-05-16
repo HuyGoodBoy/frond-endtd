@@ -14,24 +14,24 @@
 }
 
 *::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #7c3aed, #4f46e5);
+  background: linear-gradient(to bottom, #ec4899, #db2777);
   border-radius: 8px;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to bottom, #6d28d9, #4338ca);
+  background: linear-gradient(to bottom, #be185d, #9d174d);
 }
 
 :root {
   /* Primary colors */
-  --primary: #6d28d9;     /* Purple 800 */
-  --primary-light: #8b5cf6; /* Purple 500 */
-  --primary-dark: #5b21b6;  /* Purple 900 */
+  --primary: #be185d;     /* Pink 800 */
+  --primary-light: #ec4899; /* Pink 500 */
+  --primary-dark: #831843;  /* Pink 900 */
   
   /* Secondary colors */
-  --secondary: #4f46e5;      /* Indigo 600 */
-  --secondary-light: #818cf8; /* Indigo 400 */
-  --secondary-dark: #3730a3;  /* Indigo 800 */
+  --secondary: #db2777;      /* Pink 600 */
+  --secondary-light: #f472b6; /* Pink 400 */
+  --secondary-dark: #9d174d;  /* Pink 800 */
   
   /* Accent colors */
   --accent: #ec4899;  /* Pink 500 */
@@ -67,21 +67,21 @@
 }
 
 .btn-primary {
-  @apply px-6 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-medium rounded-full
-         hover:from-purple-700 hover:to-indigo-700 shadow-md hover:shadow-lg
-         focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50
+  @apply px-6 py-2.5 bg-gradient-to-r from-pink-600 to-pink-700 text-white font-medium rounded-full
+         hover:from-pink-700 hover:to-pink-800 shadow-md hover:shadow-lg
+         focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-opacity-50
          transition-all duration-300 ease-in-out;
 }
 
 .btn-secondary {
-  @apply px-6 py-2.5 bg-white text-purple-600 font-medium rounded-full border border-purple-600
-         hover:bg-purple-50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50
+  @apply px-6 py-2.5 bg-white text-pink-600 font-medium rounded-full border border-pink-600
+         hover:bg-pink-50 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-opacity-50
          transition-all duration-300 ease-in-out;
 }
 
 .input-field {
-  @apply px-4 py-2 border-2 border-neutral-200 rounded-lg focus:border-purple-500 
-         focus:outline-none focus:ring-2 focus:ring-purple-300 focus:ring-opacity-50
+  @apply px-4 py-2 border-2 border-neutral-200 rounded-lg focus:border-pink-500 
+         focus:outline-none focus:ring-2 focus:ring-pink-300 focus:ring-opacity-50
          transition-colors duration-200;
 }
 
@@ -104,16 +104,16 @@ h3 {
 
 /* Gradient backgrounds */
 .bg-gradient-primary {
-  @apply bg-gradient-to-r from-purple-600 to-indigo-600;
+  @apply bg-gradient-to-r from-pink-600 to-pink-700;
 }
 
 .bg-gradient-light {
-  @apply bg-gradient-to-r from-purple-50 to-indigo-50;
+  @apply bg-gradient-to-r from-pink-50 to-pink-100;
 }
 
 /* Text gradients */
 .text-gradient {
-  @apply bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent;
+  @apply bg-gradient-to-r from-pink-600 to-pink-700 bg-clip-text text-transparent;
 }
 
 /* Animation utilities */
