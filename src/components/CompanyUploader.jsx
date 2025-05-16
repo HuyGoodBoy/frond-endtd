@@ -10,7 +10,7 @@ const CompanyUploader = ({ initialAnalysis }) => {
   const [error, setError] = useState(null);
 
   // Backend API URL
-  const API_URL = "http://localhost:8000/evaluate-company";
+  const API_URL = "https://cv.tdconsulting.vn/evaluate-company";
 
   useEffect(() => {
     setAnalysisResult(initialAnalysis);

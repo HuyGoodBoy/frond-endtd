@@ -7,7 +7,7 @@ const DailyStats = ({ type = "all" }) => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await fetch('http://localhost:8000/stats');
+        const response = await fetch('https://cv.tdconsulting.vn/stats');
         if (!response.ok) {
           throw new Error('Failed to fetch stats');
         }

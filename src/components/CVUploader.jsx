@@ -13,7 +13,7 @@ const CVUploader = ({ selectedAnalysis }) => {
   const [useJobDescFile, setUseJobDescFile] = useState(false); // Toggle giữa text và file
 
   // Backend API URL
-  const API_URL = "http://localhost:8000/evaluate-cv";
+  const API_URL = "https://cv.tdconsulting.vn/evaluate-cv";
 
   // Cập nhật kết quả khi selectedAnalysis thay đổi
   useEffect(() => {
